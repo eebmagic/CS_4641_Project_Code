@@ -4,7 +4,7 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler
 
 class DataSet:
-    def __init__(self):
+    def __init__(self, zillowSavableCols=['December 2015']):
         self.census = self.loadCensus()
         self.zillow = self.loadZillow()
 
@@ -24,14 +24,11 @@ class DataSet:
 
         # Drop columns with strings
         censusDropableCols = ['State', 'CensusId', 'County', 'Full County Name']
-        zillowDropableCols = [
-            'Full County Name',
-            'January 2015', 'February 2015', 'March 2015',
-            'April 2015', 'May 2015', 'June 2015', 'July 2015', 'August 2015',
-            'September 2015', 'October 2015', 'November 2015'
-        ]
         self.census = self.census.drop(censusDropableCols, axis=1)
-        self.zillow = self.zillow.drop(zillowDropableCols, axis=1)
+        self.zillow = self.zillow[zillowSavableCols]
+
+        self.dataColumns = self.census.columns
+        self.targetColumns = self.zillow.columns
 
         # Normalize data
         scaler = StandardScaler().fit(self.census)
@@ -74,3 +71,6 @@ if __name__ == '__main__':
     print(d.census.mean(), d.census.std())
     print(d.census.shape)
     print(type(d.census))
+
+    print(d.dataColumns)
+    print(d.targetColumns)

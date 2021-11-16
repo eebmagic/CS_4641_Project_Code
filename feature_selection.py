@@ -75,7 +75,7 @@ def backward_feature_selection(X, y, model_init=Ridge, n_features=None, percent_
         function to initialize model for making predictions
     n_features : int, optional
         Number of features to keep
-    percent_features : float, optiona
+    percent_features : float, optional
         Percent of total features to keep. 
         Lower precedence than `n_features`
     n_folds : int, optional
@@ -113,22 +113,20 @@ def backward_feature_selection(X, y, model_init=Ridge, n_features=None, percent_
 
 if __name__ == "__main__":
     from data_loader import DataSet
+
+    print('Loading data...')
     ds = DataSet()
-    data_columns = ['TotalPop', 'Men', 'Women', 'Hispanic',
-       'White', 'Black', 'Native', 'Asian', 'Pacific', 'Citizen', 'Income',
-       'IncomeErr', 'IncomePerCap', 'IncomePerCapErr', 'Poverty',
-       'ChildPoverty', 'Professional', 'Service', 'Office', 'Construction',
-       'Production', 'Drive', 'Carpool', 'Transit', 'Walk', 'OtherTransp',
-       'WorkAtHome', 'MeanCommute', 'Employed', 'PrivateWork', 'PublicWork',
-       'SelfEmployed', 'FamilyWork', 'Unemployment']
-    X = ds.census[data_columns].to_numpy()
+    X = ds.census
+    y = ds.zillow.flatten()
 
-    censusCounties = set(ds.census['Full County Name'])
-    selection = ds.zillow['Full County Name'].isin(censusCounties)
-    ds.zillow = ds.zillow[selection]
-    month = 'December 2015'
-    y = ds.zillow[month].to_numpy()
+    print('Starting forward selection...')
+    forwardResults = forward_feature_selection(X, y, model_init=SVR, param_grid={})
+    forwardSelections = [ds.dataColumns[i] for i in forwardResults.tolist()]
+    print('Column indices:', forwardResults)
+    print('Column selections:', forwardSelections)
 
-    X = StandardScaler().fit_transform(X)
-    print(forward_feature_selection(X, y, model_init=SVR, param_grid={}))
-    print(backward_feature_selection(X, y, model_init=SVR, param_grid={}))
+    print('Starting backward selection...')
+    backwardResults = backward_feature_selection(X, y, model_init=SVR, param_grid={})
+    backwardSelections = [ds.dataColumns[i] for i in backwardResults.tolist()]
+    print('Column indices:', backwardResults)
+    print('Column selections:', backwardSelections)
