@@ -1,4 +1,7 @@
 import pandas as pd
+import numpy as np
+
+from sklearn.preprocessing import StandardScaler
 
 class DataSet:
     def __init__(self):
@@ -9,6 +12,33 @@ class DataSet:
         zillowCounties = set(self.zillow['Full County Name'])
         selection = self.census['Full County Name'].isin(zillowCounties)
         self.census = self.census[selection]
+
+        # Remove extra counties in zillow data
+        censusCounties = set(self.census['Full County Name'])
+        selection = self.zillow['Full County Name'].isin(censusCounties)
+        self.zillow = self.zillow[selection]
+
+        # Sort both sets so that rows match up
+        self.census = self.census.sort_values(by=['Full County Name'])
+        self.zillow = self.zillow.sort_values(by=['Full County Name'])
+
+        # Drop columns with strings
+        censusDropableCols = ['State', 'CensusId', 'County', 'Full County Name']
+        zillowDropableCols = [
+            'Full County Name',
+            'January 2015', 'February 2015', 'March 2015',
+            'April 2015', 'May 2015', 'June 2015', 'July 2015', 'August 2015',
+            'September 2015', 'October 2015', 'November 2015'
+        ]
+        self.census = self.census.drop(censusDropableCols, axis=1)
+        self.zillow = self.zillow.drop(zillowDropableCols, axis=1)
+
+        # Normalize data
+        scaler = StandardScaler().fit(self.census)
+        self.census = scaler.transform(self.census)
+
+        scaler = StandardScaler().fit(self.zillow)
+        self.zillow = scaler.transform(self.zillow)
 
 
     def loadCensus(self):
@@ -30,5 +60,17 @@ class DataSet:
 
 if __name__ == '__main__':
     d = DataSet()
-    print(d.census)
+
+    print('Zillow data:')
     print(d.zillow)
+    print(d.zillow.min(), d.zillow.max())
+    print(d.zillow.mean(), d.zillow.std())
+    print(d.zillow.shape)
+    print(type(d.zillow))
+
+    print('Census data:')
+    print(d.census)
+    print(d.census.min(), d.census.max())
+    print(d.census.mean(), d.census.std())
+    print(d.census.shape)
+    print(type(d.census))
