@@ -1,7 +1,8 @@
-from sklearn.linear_model import Ridge, Lasso
+from sklearn.linear_model import Ridge, Lasso, LassoCV
 from sklearn.svm import SVR
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import GridSearchCV
+from sklearn.feature_selection import SelectFromModel, SequentialFeatureSelector
 import numpy as np
 import pandas as pd
 
@@ -111,6 +112,71 @@ def backward_feature_selection(X, y, model_init=Ridge, n_features=None, percent_
         remove.add(worst_feat)
     return np.setdiff1d(np.arange(X.shape[1]), np.array(remove))
 
+def sequential_feature_selection(X, y, direction='forward', model_init=Ridge, n_features=None, percent_features=0.8, n_folds=5, param_grid={}):
+    """Perform sequential feature selection using sklearn built-ins
+
+    Parameters
+    ----------
+    X : np.array or pd.DataFrame
+        2d array of shape (samples, features)
+    y : np.array or pd.DataFrame
+        1d array of shape (samples,)
+    direction : {'forward', 'backward'}, optional
+        Whether to do forward or backward feature selection
+    model_init : function
+        function to initialize model for making predictions
+    n_features : int, optional
+        Number of features to keep
+    percent_features : float, optional
+        Percent of total features to keep. 
+        Lower precedence than `n_features`
+    n_folds : int, optional
+        Number of folds for cross-validation, default 5
+    param_grid : dict, optional
+        parameter grid for GridSearchCV
+
+    Return
+    ------
+    np.array
+        Array containing indices of features to include
+    """
+    if n_features is None:
+        n_features = round(X.shape[1] * percent_features)
+    sfs = SequentialFeatureSelector(GridSearchCV(model_init(), param_grid, cv=n_folds), direction=direction, n_features_to_select=n_features).fit(X, y)
+    return np.nonzero(sfs.get_support())[0]
+
+def lasso_feature_selection(X, y, threshold=-np.inf, max_features=None, max_percent_features=None, lassocv_params={}):
+    """Feature selection using Lasso regression
+
+    Parameters
+    ----------
+    X : np.array or pd.DataFrame
+        2d array of shape (samples, features)
+    y : np.array or pd.DataFrame
+        1d array of shape (samples,)
+    threshold : float, optional
+        Minimum magnitude of lasso coefficient to keep.
+        Set to -np.inf to use max_features only
+    max_features : int, optional
+        Maximum number of features to keep. Default None
+        sets no limit
+    max_percent_features : float, optional
+        Maximum percent of original features to keep.
+        Default None sets no limit. Lower precedence
+        than `max_features`
+    lassocv_params : dict, optional
+        params for LassoCV
+    
+    Return
+    ------
+    np.array
+        Array containing indices of features to include
+    """
+    if max_features is None and max_percent_features is not None:
+        max_features = round(X.shape[1] * max_percent_features)
+    sfm = SelectFromModel(LassoCV(**lassocv_params), threshold=threshold, max_features=max_features).fit(X, y)
+    return np.nonzero(sfm.get_support())[0]
+
 if __name__ == "__main__":
     from data_loader import DataSet
 
@@ -120,13 +186,19 @@ if __name__ == "__main__":
     y = ds.zillow.flatten()
 
     print('Starting forward selection...')
-    forwardResults = forward_feature_selection(X, y, model_init=SVR, param_grid={})
+    forwardResults = sequential_feature_selection(X, y, direction='forward', model_init=Ridge, param_grid={'alpha': np.logspace(-3, 1, 3)})
     forwardSelections = [ds.dataColumns[i] for i in forwardResults.tolist()]
     print('Column indices:', forwardResults)
     print('Column selections:', forwardSelections)
 
     print('Starting backward selection...')
-    backwardResults = backward_feature_selection(X, y, model_init=SVR, param_grid={})
+    backwardResults = sequential_feature_selection(X, y, direction='backward', model_init=Ridge, param_grid={'alpha': np.logspace(-3, 1, 3)})
     backwardSelections = [ds.dataColumns[i] for i in backwardResults.tolist()]
     print('Column indices:', backwardResults)
     print('Column selections:', backwardSelections)
+
+    print('Starting Lasso feature selection')
+    lassoResults = lasso_feature_selection(X, y, max_percent_features=0.8, lassocv_params={'alphas': np.logspace(-3, 1, 5)})
+    lassoSelections = [ds.dataColumns[i] for i in lassoResults.tolist()]
+    print('Column indices:', lassoResults)
+    print('Column selections:', lassoSelections)
