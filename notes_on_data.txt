@@ -1,0 +1,25 @@
+
+zillow:
+    Data: City Code, City, Metro, County, State, Population Rank, Rent by month (full years of data for 2011-2016)
+    States includes 51 states: Main 50 + D.C.
+    
+    We should probably only use the pricepersqft.csv data.
+
+    Bucket distributions stay very consistent for all months in 2015.
+        (Still possible that there is internal movement there though)
+
+
+us_census_demograhpic_data:
+    Data Columns:
+        CensusId, State, County, TotalPop, Men, Women,
+        Hispanic, White, Black, Native, Asian, Pacific,
+        Citizen, Income, IncomeErr, IncomePerCap, IncomePerCapErr, Poverty, ChildPoverty,
+        Professional, Service, Office, Construction, Production,
+        Drive, Carpool, Transit, Walk, OtherTransp,
+        WorkAtHome, MeanCommute,
+        Employed,
+        PrivateWork, PublicWork, SelfEmployed, FamilyWork, Unemployment
+
+    count_data.csv files are combined results by county.
+    count_tract_data.csv files are split reby county at several towns
+
