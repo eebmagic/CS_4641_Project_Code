@@ -30,7 +30,7 @@ We began with ridge regression as our intitial approach. Ridge regression is oft
 ## Potential Results / Discussion
 The regression analysis will yield a relationship between median rent of United States counties and the various demographics of each. Given the wide range of demographic data from the census dataset, we seek to find what parameter or set of parameters correlates to the highest or lowest rent prices. Examples of these demographic parameters include age, ethnicity, income, poverty, and unemployment, commute time, industry distribution, etc. While some parameters seem directly correlated, others may yield unexpected dependence to rent. 
 
-From our preprocessing of the data, we identify forward feature selection as the most effective. 
+From our preprocessing of the data, we identify forward feature selection as the most effective. As to the actual effectiveness of the preprocessing, we saw a slight improvement in the R2 value of our ridge regression, as illustrated below.
 
 ![](/results/Ridge_NoForward.png)
 ![](/results/Ridge_WithForward.png)
