@@ -14,7 +14,9 @@ Understanding how housing prices correlate with demographics can help to predict
 This project aims to predict housing prices of counties in the United States given demographic data and discover relevant correlations using supervised machine learning with the American Community Survey of 2015 and the Zillow Rent Index, which tracks the median housing price per square foot of a given area.
 
 ## Data Collection and Preprocessing
-Two different datasets from Kaggle were selected in this analysis -- the 2015 U.S Census and the Zillow Rent Index. To clean these
+Two different datasets from Kaggle were selected in this analysis -- the 2015 U.S Census and the Zillow Rent Index. 
+
+The Zillow Rent Index is a dollar-valued index that captures average market rent for a given demographic and/or geographic group. Much of this data has been prescreened and cleaned by Zillow by removing outliers and weighting the homes that actually rent as higher. 
 
 First, we need to preprocess the data, which includes both numerical and categorical variables. 
 For numerical data, we should normalize the values, and for categorical data, we can try simple integer encoding or one-hot encoding depending on the variable.
