@@ -75,7 +75,7 @@ def plot_predictions(plot_data: list, title: str='Ridge Regression: Predicted vs
     plt.axis([axis_min, axis_max, axis_min, axis_max])
 
     plt.suptitle(title, size=10)
-    plt.title(f'R\u00b2 = {round(r2, 8)} \t  Slope of Trendline = {round(m, 8)}', size=10)
+    plt.title(f'R\u00b2 = {round(r2, 8)}       Slope of Trendline = {round(m, 8)}', size=10)
     plt.xlabel('Actual Normalized Price Per Sq. Ft')
     plt.ylabel('Predicted Normalized Price Per Sq. Ft')
     return
