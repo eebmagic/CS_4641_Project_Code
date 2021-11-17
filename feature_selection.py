@@ -185,20 +185,26 @@ if __name__ == "__main__":
     X = ds.census
     y = ds.zillow.flatten()
 
-    print('Starting forward selection...')
+    print('\nStarting forward selection...')
     forwardResults = sequential_feature_selection(X, y, direction='forward', model_init=Ridge, param_grid={'alpha': np.logspace(-3, 1, 3)})
     forwardSelections = [ds.dataColumns[i] for i in forwardResults.tolist()]
-    print('Column indices:', forwardResults)
-    print('Column selections:', forwardSelections)
+    forwardRejections = [col for col in ds.dataColumns if col not in forwardSelections]
+    print('Column Indices:', forwardResults)
+    print('Column Selections:', forwardSelections)
+    print('Column Rejections:', forwardRejections)
 
-    print('Starting backward selection...')
+    print('\nStarting backward selection...')
     backwardResults = sequential_feature_selection(X, y, direction='backward', model_init=Ridge, param_grid={'alpha': np.logspace(-3, 1, 3)})
     backwardSelections = [ds.dataColumns[i] for i in backwardResults.tolist()]
-    print('Column indices:', backwardResults)
-    print('Column selections:', backwardSelections)
+    backwardRejections = [col for col in ds.dataColumns if col not in backwardSelections]
+    print('Column Indices:', backwardResults)
+    print('Column Selections:', backwardSelections)
+    print('Column Rejections:', backwardRejections)
 
-    print('Starting Lasso feature selection')
+    print('\nStarting Lasso feature selection')
     lassoResults = lasso_feature_selection(X, y, max_percent_features=0.8, lassocv_params={'alphas': np.logspace(-3, 1, 5)})
     lassoSelections = [ds.dataColumns[i] for i in lassoResults.tolist()]
-    print('Column indices:', lassoResults)
-    print('Column selections:', lassoSelections)
+    lassoRejections = [col for col in ds.dataColumns if col not in lassoSelections]
+    print('Column Indices:', lassoResults)
+    print('Column Selections:', lassoSelections)
+    print('Column Rejections:', lassoRejections)
