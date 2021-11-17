@@ -29,9 +29,11 @@ def fit_ridge(x, y):
 def get_model(x, y):
     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2)
     ridge = fit_ridge(x_train, y_train)
-    preds = ridge.predict(x_test)
-    r2 = r2_score(y_test, preds)
-    return ridge, r2
+    y_preds = ridge.predict(x_test)
+    r2 = r2_score(y_test, y_preds)
+
+    plot_data = [x_test, y_test, y_preds, r2]
+    return ridge, r2, plot_data
 
 def get_r2_test_list(num_models: int, preprocess: bool=False) -> list:
     x, y = get_raw_data()
@@ -40,7 +42,7 @@ def get_r2_test_list(num_models: int, preprocess: bool=False) -> list:
 
     r2_test_list = []
     for i in range(num_models):
-        _, r2 = get_model(x, y)
+        _, r2, _ = get_model(x, y)
         r2_test_list.append(r2)
 
     return r2_test_list
@@ -56,18 +58,45 @@ def r2_test(num_models: int=1000):
 
     return mean_r2_raw, std_r2_raw, mean_r2_preprocessed, std_r2_preprocessed
 
-if __name__ == "__main__":
-    # x, y = get_raw_data()
-    # ridge_raw, r2_raw = get_model(x, y)
-    # print("Ridge R2 Score with Raw Data: {}".format(r2_raw))
+def plot_predictions(plot_data: list, title: str='Ridge Regression: Predicted vs Actual'):
+    x_test = plot_data[0]
+    y_test = plot_data[1]
+    y_preds = plot_data[2]
+    r2 = plot_data[3]
 
-    # x_preprocessed, y_preprocessed = preprocess_data(x, y)
-    # ridge_preproccessed, r2_preprocessed = get_model(x_preprocessed, y_preprocessed)
-    # print("Ridge R2 Score with Forward Selected Features: {}".format(r2_preprocessed))
+    plt.figure(figsize=(6,6))
+    plt.scatter(y_test, y_preds, color='deepskyblue', alpha=0.8, linewidths=0)
+
+    m, b = np.polyfit(y_test, y_preds, 1)
+    plt.plot(y_test, (m*y_test + b), color='black')
+
+    axis_max = max([max(y_test), max(y_preds)]) + 0.5
+    axis_min = min([min(y_test), min(y_preds)]) - 0.5
+    plt.axis([axis_min, axis_max, axis_min, axis_max])
+
+    plt.suptitle(title, size=10)
+    plt.title(f'R2 = {round(r2, 8)}       Slope of Trendline = {round(m, 8)}', size=10)
+    plt.xlabel('Actual Normalized Price Per Sq. Ft')
+    plt.ylabel('Predicted Normalized Price Per Sq. Ft')
+    return
+    
+
+if __name__ == "__main__":
+    x, y = get_raw_data()
+    ridge_raw, r2_raw, plot_data = get_model(x, y)
+    print("Ridge R2 Score with Raw Data: {}".format(r2_raw))
+    plot_predictions(plot_data, 'Ridge Regression with Raw Data: Predicted vs Actual')
+
+    x_preprocessed, y_preprocessed = preprocess_data(x, y)
+    ridge_preproccessed, r2_preprocessed, plot_data = get_model(x_preprocessed, y_preprocessed)
+    print("Ridge R2 Score with Forward Selected Features: {}".format(r2_preprocessed))
+    plot_predictions(plot_data, 'Ridge Regression with Forward Selected Features: Predicted vs Actual')
 
     print("Running Ridge Regression R2 test...")
     mean_r2_raw, std_r2_raw, mean_r2_preprocessed, std_r2_preprocessed = r2_test()
 
     print(f"Ridge R2 Score Average with Raw Data: {round(mean_r2_raw, 8)} \n\t  with Standard Deviation: {round(std_r2_raw, 8)}")
     print(f"Ridge R2 Score Average with Forward Selected Features: {round(mean_r2_preprocessed, 8)} \n\t  with Standard Deviation: {round(std_r2_preprocessed, 8)}")
+
+    plt.show()
 
