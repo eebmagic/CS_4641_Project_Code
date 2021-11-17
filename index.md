@@ -11,7 +11,7 @@
 ## Background and Problem Definition
 Understanding how housing prices correlate with demographics can help to predict how property values will adjust to changes in the population, income, ethnicity, areas of employment, and other features of an area. This insight can help investors in real estate decide where to buy and sell property and could inform governments on how they can make housing more affordable. Additionally this tool could be used to predict future changes rent before rent is adjusted to correspond with local changes in an area.
 
-This project aims to predict housing prices of counties in the United States given demographic data and discover relevant correlations using supervised machine learning with the American Community Survey of 2015 and the Zillow Rent Index, which tracks the median housing price per square foot of a given area.
+This project aims to predict housing prices of counties in the United States given demographic data and discover relevant correlations using supervised machine learning with the American Community Survey of 2015 and the Zillow Rent Index, which tracks the median housing price per square foot of a given area. The analysis will yield a relationship between median rent of United States counties and the various demographics of each. Given the wide range of demographic data from the census dataset, we seek to find what parameter or set of parameters correlates to the highest or lowest rent prices. 
 
 ## Data Collection and Preprocessing
 Two different datasets from Kaggle were selected in this analysis -- the 2015 U.S Census and the Zillow Rent Index. 
@@ -23,14 +23,12 @@ To clean the data, the first thing we did was remove the counties that don't ove
 ## Methods
 Our problem is a regression problem, where we attempt to approximate the relationship between independent variables (population, etc.) and a dependent variable (median rent).
 
-Next, we need to learn a mapping from the input features to the output. There are many approaches we can choose from for this regression task. From linear approaches, we can experiment with simple linear regression, Lasso regression, and GLMs like Gamma regression. Among non-linear approaches, we can try support vector regression and feedforward neural networks, and we can also use additional input features generated from non-linear transformations of original inputs with the linear methods. Afterward, we can compare training time and performance of these various approaches, and we can probe the trained models to see what features are particularly informative of the output.
+We need to learn a mapping from the input features to the output. There are many approaches we can choose from for this regression task. From linear approaches, we can experiment with simple linear regression, Lasso regression, and GLMs like Gamma regression. Among non-linear approaches, we can try support vector regression and feedforward neural networks, and we can also use additional input features generated from non-linear transformations of original inputs with the linear methods. Afterward, we can compare training time and performance of these various approaches, and we can probe the trained models to see what features are particularly informative of the output.
 
-We began with ridge regression as our intitial approach. Ridge regression is often effective in problems with high correlation between features, as often seem with economic/demographic data. We studied the effect of preprocessing the data before running regression, by using forward, backward, and lasso feature selection.  
+We began with ridge regression as our intitial approach. Ridge regression is relatively simple and often effective in problems with high correlation between features, as often seem with economic/demographic data. Further models will be studied to determine effectiveness. We also studied the effect of preprocessing the data before running regression, by using forward, backward, and lasso feature selection.  
 
-## Potential Results / Discussion
-The regression analysis will yield a relationship between median rent of United States counties and the various demographics of each. Given the wide range of demographic data from the census dataset, we seek to find what parameter or set of parameters correlates to the highest or lowest rent prices. Examples of these demographic parameters include age, ethnicity, income, poverty, and unemployment, commute time, industry distribution, etc. While some parameters seem directly correlated, others may yield unexpected dependence to rent. 
-
-From our preprocessing of the data, we identify forward feature selection as the most effective. As to the actual effectiveness of the preprocessing, we saw a slight improvement in the R2 value of our ridge regression, as illustrated below.
+## Current and Potential Results / Discussion
+Among our preprocessing methods of the data, we identified forward feature selection as the most effective. As to the actual effectiveness of the preprocessing, we saw a slight improvement in the R2 value of our ridge regression, as illustrated below.
 
 ![](/results/Ridge_NoForward.png)
 ![](/results/Ridge_WithForward.png)
