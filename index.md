@@ -28,6 +28,9 @@ Next, we need to learn a mapping from the input features to the output. There ar
 ## Potential Results / Discussion
 The regression analysis will yield a relationship between median rent of United States counties and the various demographics of each. Given the wide range of demographic data from the census dataset, we seek to find what parameter or set of parameters correlates to the highest or lowest rent prices. Examples of these demographic parameters include age, ethnicity, income, poverty, and unemployment, commute time, industry distribution, etc. While some parameters seem directly correlated, others may yield unexpected dependence to rent. 
 
+![](/assets/results/Ridge_NoForward.png)
+![]()
+
 ## Proposed Timeline
 ### Project Proposal (10-7)
 
