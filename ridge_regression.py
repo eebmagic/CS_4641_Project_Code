@@ -45,7 +45,7 @@ def get_r2_test_list(num_models: int, preprocess: bool=False) -> list:
 
     return r2_test_list
 
-def r2_test(num_models):
+def r2_test(num_models: int=1000):
     r2_test_list_raw = get_r2_test_list(num_models)
     mean_r2_raw = np.mean(r2_test_list_raw)
     std_r2_raw = np.std(r2_test_list_raw)
@@ -66,7 +66,7 @@ if __name__ == "__main__":
     # print("Ridge R2 Score with Forward Selected Features: {}".format(r2_preprocessed))
 
     print("Running Ridge Regression R2 test...")
-    mean_r2_raw, std_r2_raw, mean_r2_preprocessed, std_r2_preprocessed = r2_test(1000)
+    mean_r2_raw, std_r2_raw, mean_r2_preprocessed, std_r2_preprocessed = r2_test()
 
     print(f"Ridge R2 Score Average with Raw Data: {round(mean_r2_raw, 8)} \n\t  with Standard Deviation: {round(std_r2_raw, 8)}")
     print(f"Ridge R2 Score Average with Forward Selected Features: {round(mean_r2_preprocessed, 8)} \n\t  with Standard Deviation: {round(std_r2_preprocessed, 8)}")
