@@ -1,10 +1,12 @@
+import numpy as np 
 from sklearn.linear_model import Ridge
 from sklearn.svm import SVR
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score
+import matplotlib.pyplot as plt
+
 from data_loader import DataSet
 from feature_selection import forward_feature_selection
-import numpy as np 
 
 def get_raw_data():
     ds = DataSet()
@@ -24,16 +26,48 @@ def fit_ridge(x, y):
     ridge.fit(x, y)
     return ridge
 
-if __name__ == "__main__":
-    x, y = get_raw_data()
-    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.05 , random_state=1)
+def get_model(x, y):
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2)
     ridge = fit_ridge(x_train, y_train)
     preds = ridge.predict(x_test)
-    print("Ridge R2 Score with Raw Data: {}".format(r2_score(y_test, preds)))
+    r2 = r2_score(y_test, preds)
+    return ridge, r2
 
+def get_r2_test_list(num_models: int, preprocess: bool=False) -> list:
+    x, y = get_raw_data()
+    if preprocess:
+        x, y = preprocess_data(x, y)
 
-    processed_x, processed_y = preprocess_data(x, y)
-    xp_train, xp_test, yp_train, yp_test = train_test_split(processed_x, processed_y, test_size=0.05 , random_state=1)
-    ridge2 = fit_ridge(xp_train, yp_train)
-    preds2 = ridge2.predict(xp_test)
-    print("Ridge R2 Score with Forward Selected Features: {}".format(r2_score(yp_test, preds2)))
+    r2_test_list = []
+    for i in range(num_models):
+        _, r2 = get_model(x, y)
+        r2_test_list.append(r2)
+
+    return r2_test_list
+
+def r2_test(num_models):
+    r2_test_list_raw = get_r2_test_list(num_models)
+    mean_r2_raw = np.mean(r2_test_list_raw)
+    std_r2_raw = np.std(r2_test_list_raw)
+
+    r2_test_list_preprocessed = get_r2_test_list(num_models, preprocess=True)
+    mean_r2_preprocessed = np.mean(r2_test_list_preprocessed)
+    std_r2_preprocessed = np.std(r2_test_list_preprocessed)
+
+    return mean_r2_raw, std_r2_raw, mean_r2_preprocessed, std_r2_preprocessed
+
+if __name__ == "__main__":
+    # x, y = get_raw_data()
+    # ridge_raw, r2_raw = get_model(x, y)
+    # print("Ridge R2 Score with Raw Data: {}".format(r2_raw))
+
+    # x_preprocessed, y_preprocessed = preprocess_data(x, y)
+    # ridge_preproccessed, r2_preprocessed = get_model(x_preprocessed, y_preprocessed)
+    # print("Ridge R2 Score with Forward Selected Features: {}".format(r2_preprocessed))
+
+    print("Running Ridge Regression R2 test...")
+    mean_r2_raw, std_r2_raw, mean_r2_preprocessed, std_r2_preprocessed = r2_test(1000)
+
+    print(f"Ridge R2 Score Average with Raw Data: {round(mean_r2_raw, 8)} \n\t  with Standard Deviation: {round(std_r2_raw, 8)}")
+    print(f"Ridge R2 Score Average with Forward Selected Features: {round(mean_r2_preprocessed, 8)} \n\t  with Standard Deviation: {round(std_r2_preprocessed, 8)}")
+
