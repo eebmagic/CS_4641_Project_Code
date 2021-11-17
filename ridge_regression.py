@@ -75,24 +75,24 @@ def plot_predictions(plot_data: list, title: str='Ridge Regression: Predicted vs
     plt.axis([axis_min, axis_max, axis_min, axis_max])
 
     plt.suptitle(title, size=10)
-    plt.title(f'R2 = {round(r2, 8)}       Slope of Trendline = {round(m, 8)}', size=10)
+    plt.title(f'R\u00b2 = {round(r2, 8)} \t  Slope of Trendline = {round(m, 8)}', size=10)
     plt.xlabel('Actual Normalized Price Per Sq. Ft')
     plt.ylabel('Predicted Normalized Price Per Sq. Ft')
     return
-    
+
 
 if __name__ == "__main__":
     x, y = get_raw_data()
     ridge_raw, r2_raw, plot_data = get_model(x, y)
-    print("Ridge R2 Score with Raw Data: {}".format(r2_raw))
+    print(f"Ridge R2 Score with Raw Data: {round(r2_raw, 8)}")
     plot_predictions(plot_data, 'Ridge Regression with Raw Data: Predicted vs Actual')
 
     x_preprocessed, y_preprocessed = preprocess_data(x, y)
     ridge_preproccessed, r2_preprocessed, plot_data = get_model(x_preprocessed, y_preprocessed)
-    print("Ridge R2 Score with Forward Selected Features: {}".format(r2_preprocessed))
+    print(f"Ridge R2 Score with Forward Selected Features: {round(r2_preprocessed, 8)}")
     plot_predictions(plot_data, 'Ridge Regression with Forward Selected Features: Predicted vs Actual')
 
-    print("Running Ridge Regression R2 test...")
+    # print("Running Ridge Regression R2 test...")
     mean_r2_raw, std_r2_raw, mean_r2_preprocessed, std_r2_preprocessed = r2_test()
 
     print(f"Ridge R2 Score Average with Raw Data: {round(mean_r2_raw, 8)} \n\t  with Standard Deviation: {round(std_r2_raw, 8)}")
