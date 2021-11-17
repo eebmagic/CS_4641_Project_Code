@@ -16,7 +16,7 @@ This project aims to predict housing prices of counties in the United States giv
 ## Data Collection and Preprocessing
 Two different datasets from Kaggle were selected in this analysis -- the 2015 U.S Census and the Zillow Rent Index. 
 
-The Zillow Rent Index is a dollar-valued index that captures average market rent for a given demographic and/or geographic group. Much of this data has been prescreened and cleaned by Zillow by removing outliers and weighting the homes that actually rent as higher. 
+The Zillow Rent Index is a dollar-valued index that captures average market rent for a given demographic and/or geographic group. Much of this data has been prescreened and cleaned by Zillow by removing outliers and weighting the homes that actually rent as higher. The data provided details the Rent Index for each month for each U.S City (and corresponding county which will be used to match with the census) from 2010 to 2017. The data has 13131 unique cities and 1820 counties. The U.S Census data on the other hand includes demographic and geographic columns by U.S County. These columns include things like income, race, poverty levels, Voting Age, and gender.
 
 First, we need to preprocess the data, which includes both numerical and categorical variables. 
 For numerical data, we should normalize the values, and for categorical data, we can try simple integer encoding or one-hot encoding depending on the variable.
