@@ -18,15 +18,19 @@ Two different datasets from Kaggle were selected in this analysis -- the 2015 U.
 
 The Zillow Rent Index is a dollar-valued index that captures average market rent for a given demographic and/or geographic group. Much of this data has been prescreened and cleaned by Zillow by removing outliers and weighting the homes that actually rent as higher. The data provided details the Rent Index for each month for each U.S City (and corresponding county which will be used to match with the census) from 2010 to 2017. The data has 13131 unique cities and 1820 counties. The U.S Census data on the other hand includes demographic and geographic columns by U.S County. These columns include things like income, race, poverty levels, Voting Age, and gender.
 
-To process the data, the first thing we did was remove the counties that don't overlap between the two data sets. The datasets were then sorted and combined into one, with each numerical column normalized.
+To clean the data, the first thing we did was remove the counties that don't overlap between the two data sets. The datasets were then sorted and combined into one, with each numerical column normalized.
 
 ## Methods
 Our problem is a regression problem, where we attempt to approximate the relationship between independent variables (population, etc.) and a dependent variable (median rent).
 
 Next, we need to learn a mapping from the input features to the output. There are many approaches we can choose from for this regression task. From linear approaches, we can experiment with simple linear regression, Lasso regression, and GLMs like Gamma regression. Among non-linear approaches, we can try support vector regression and feedforward neural networks, and we can also use additional input features generated from non-linear transformations of original inputs with the linear methods. Afterward, we can compare training time and performance of these various approaches, and we can probe the trained models to see what features are particularly informative of the output.
 
+We began with ridge regression as our intitial approach. Ridge regression is often effective in problems with high correlation between features, as often seem with economic/demographic data. We studied the effect of preprocessing the data before running regression, by using forward, backward, and lasso feature selection.  
+
 ## Potential Results / Discussion
 The regression analysis will yield a relationship between median rent of United States counties and the various demographics of each. Given the wide range of demographic data from the census dataset, we seek to find what parameter or set of parameters correlates to the highest or lowest rent prices. Examples of these demographic parameters include age, ethnicity, income, poverty, and unemployment, commute time, industry distribution, etc. While some parameters seem directly correlated, others may yield unexpected dependence to rent. 
+
+From our preprocessing of the data, we identify forward feature selection as the most effective. 
 
 ![](/results/Ridge_NoForward.png)
 ![](/results/Ridge_WithForward.png)
