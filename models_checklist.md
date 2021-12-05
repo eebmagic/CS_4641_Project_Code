@@ -1,6 +1,6 @@
 # Methods Mentioned:
 - Linear Approaches
-    - [ ] Linear Regression
+    - [x] Linear Regression
         - Everett
         - https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html
     - [ ] Lasso Regression
