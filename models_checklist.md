@@ -3,7 +3,7 @@
     - [x] Linear Regression
         - Everett
         - https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html
-    - [ ] Lasso Regression
+    - [x] Lasso Regression
         - Everett
         - Is this different from lasso selection?
         - https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Lasso.html 
