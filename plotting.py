@@ -1,6 +1,7 @@
 import numpy as np
 from sklearn.metrics import r2_score
 import matplotlib.pyplot as plt
+from scipy.interpolate import interp1d
 
 def plot_predictions(plot_data: dict,
     title: str='DEFAULT TITLE: Predicted vs Actual', filename: str=None):
@@ -16,12 +17,18 @@ def plot_predictions(plot_data: dict,
     y_test = plot_data['test']
     y_preds = plot_data['pred']
 
+    dists = np.abs(y_test - y_preds)
+    MIN, MAX = dists.min(), dists.max()
+    m = interp1d([MIN, MAX], [0,1])
+    dists = m(dists)
+
     r2 = r2_score(y_test, y_preds)
 
     plt.figure(figsize=(6,6))
-    plt.scatter(y_test, y_preds, color='deepskyblue', alpha=0.8, linewidths=0)
+    plt.scatter(y_test, y_preds, c=dists, cmap=plt.get_cmap('plasma'))
 
     m, b = np.polyfit(y_test, y_preds, 1)
+    plt.plot(y_test, y_test, color='gray', linestyle='dotted', linewidth=1)
     plt.plot(y_test, (m*y_test + b), color='black')
 
     axis_max = max([max(y_test), max(y_preds)]) + 0.5
