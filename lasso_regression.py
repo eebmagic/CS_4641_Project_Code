@@ -53,6 +53,7 @@ for alpha in alphas:
         'pred': pred
     }
     title = f'Lasso Regression (alpha={alpha})'
-    plot_predictions(plot_data, title=title)
+    filename = f'lasso_alpha_{alpha}'
+    plot_predictions(plot_data, title=title, filename=filename)
 
 plt.show()
