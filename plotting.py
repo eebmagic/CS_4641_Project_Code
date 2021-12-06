@@ -31,8 +31,8 @@ def plot_predictions(plot_data: dict,
     plt.plot(y_test, y_test, color='gray', linestyle='dotted', linewidth=1)
     plt.plot(y_test, (m*y_test + b), color='black')
 
-    axis_max = max([max(y_test), max(y_preds)]) + 0.5
-    axis_min = min([min(y_test), min(y_preds)]) - 0.5
+    axis_max = max([max(y_test), max(y_preds)]) * 1.2
+    axis_min = min([min(y_test), min(y_preds), 0]) * 1.2
     plt.axis([axis_min, axis_max, axis_min, axis_max])
 
     plt.suptitle(title, size=10)
