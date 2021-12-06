@@ -85,5 +85,5 @@ plot_data = {
     'test': y_test,
     'pred': pred
 }
-plot_predictions(plot_data, title='Linear Regression: Predicted vs Actual', filename='glm')
+plot_predictions(plot_data, title='Gamma Regression: Predicted vs Actual', filename='glm')
 plt.show()
