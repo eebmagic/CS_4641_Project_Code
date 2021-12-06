@@ -70,7 +70,7 @@ plot_data = {
 }
 plot_predictions(plot_data, title='Linear Regression: Predicted vs Actual', filename='linearreg')
 
-total_iters = 1_000
+total_iters = 10_000
 normal_average = avg_r2(x, y, iters=total_iters)
 
 
