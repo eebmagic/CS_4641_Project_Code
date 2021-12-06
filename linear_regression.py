@@ -33,7 +33,9 @@ def avg_r2(x, y, iters=300):
         r2 = r2_score(y_test, pred)
         scores.append(r2)
 
-    return sum(scores) / len(scores)
+    scores = np.array(scores)
+
+    return np.average(scores), np.std(scores)
 
 
 # Load data
@@ -68,7 +70,8 @@ plot_data = {
 }
 plot_predictions(plot_data, title='Linear Regression: Predicted vs Actual', filename='linearreg')
 
-normal_average = avg_r2(x, y)
+total_iters = 1_000
+normal_average = avg_r2(x, y, iters=total_iters)
 
 
 ### AGAIN, but with feature reduction
@@ -106,9 +109,11 @@ title = 'Linear Regression with Forward Selected Features: Predicted vs Actual'
 filename = 'linearForward'
 plot_predictions(plot_data, title=title, filename=filename)
 
-feature_reduced_average = avg_r2(x, y)
+feature_reduced_average = avg_r2(x, y, iters=total_iters)
 
-print(f'Average R2 value with all data: {normal_average}')
-print(f'Average R2 value with feature reduction: {feature_reduced_average}')
+print(f'\nAverage R2 value with all data: {normal_average[0]}')
+print(f'Average R2 value with feature reduction: {feature_reduced_average[0]}')
+print(f'R2 std dev with all data: {normal_average[1]}')
+print(f'R2 std dev with feature reduction: {feature_reduced_average[1]}')
 
 plt.show()
