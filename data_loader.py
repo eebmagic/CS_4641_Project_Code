@@ -26,6 +26,7 @@ class DataSet:
         censusDropableCols = ['State', 'CensusId', 'County', 'Full County Name']
         self.census = self.census.drop(censusDropableCols, axis=1)
         self.zillow = self.zillow[zillowSavableCols]
+        self.zillow_actual = np.array(self.zillow.values.tolist())
 
         self.dataColumns = self.census.columns
         self.targetColumns = self.zillow.columns
