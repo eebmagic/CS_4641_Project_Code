@@ -4,7 +4,7 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler
 
 class DataSet:
-    def __init__(self, zillowSavableCols=['December 2015']):
+    def __init__(self, zillowSavableCols=['December 2015'], normalize_x=True, normalize_y=True):
         self.census = self.loadCensus()
         self.zillow = self.loadZillow()
 
@@ -31,11 +31,14 @@ class DataSet:
         self.targetColumns = self.zillow.columns
 
         # Normalize data
-        scaler = StandardScaler().fit(self.census)
-        self.census = scaler.transform(self.census)
-
-        scaler = StandardScaler().fit(self.zillow)
-        self.zillow = scaler.transform(self.zillow)
+        self.census = self.census.to_numpy()
+        self.zillow = self.zillow.to_numpy()
+        if normalize_x:
+            scaler = StandardScaler().fit(self.census)
+            self.census = scaler.transform(self.census)
+        if normalize_y:
+            scaler = StandardScaler().fit(self.zillow)
+            self.zillow = scaler.transform(self.zillow)
 
 
     def loadCensus(self):
