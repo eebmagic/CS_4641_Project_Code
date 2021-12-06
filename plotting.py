@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from scipy.interpolate import interp1d
 
 def plot_predictions(plot_data: dict,
-    title: str='DEFAULT TITLE: Predicted vs Actual', filename: str=None):
+    title: str='DEFAULT TITLE: Predicted vs Actual', filename: str=None, zillow_actual: bool=False):
     '''
     Parameters:
         plot_data: A dictionary with 'test' (the true price target),
@@ -37,8 +37,13 @@ def plot_predictions(plot_data: dict,
 
     plt.suptitle(title, size=10)
     plt.title(f'R\u00b2 = {round(r2, 8)}       Slope of Trendline = {round(m, 8)}', size=10)
-    plt.xlabel('Actual Normalized Price Per Sq. Ft')
-    plt.ylabel('Predicted Normalized Price Per Sq. Ft')
+
+    if zillow_actual:
+        plt.xlabel('Actual Zillow Rent Price Index')
+        plt.ylabel('Predicted Zillow Rent Price Index')
+    else:
+        plt.xlabel('Actual Normalized Price Per Sq. Ft')
+        plt.ylabel('Predicted Normalized Price Per Sq. Ft')
 
     if filename:
         plt.savefig(f'image_exports/{filename}.png', bbox_inches='tight')
