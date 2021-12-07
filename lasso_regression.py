@@ -1,4 +1,5 @@
 import numpy as np
+from tqdm import tqdm
 from sklearn.linear_model import Lasso
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score
@@ -20,6 +21,22 @@ def nloss(y, yh):
     mse = t / (2 * N)
 
     return mse
+
+
+def avg_r2(x, y, iters=300, alpha=0.01):
+    scores = []
+    for _ in tqdm(range(iters)):
+        x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2)
+
+        reg = Lasso(alpha=alpha).fit(x_train, y_train)
+        pred = reg.predict(x_test)
+
+        r2 = r2_score(y_test, pred)
+        scores.append(r2)
+
+    scores = np.array(scores)
+
+    return np.average(scores), np.std(scores)
 
 
 # Load data
@@ -55,5 +72,14 @@ for alpha in alphas:
     title = f'Lasso Regression (alpha={alpha})'
     filename = f'lasso_alpha_{alpha}'
     plot_predictions(plot_data, title=title, filename=filename)
+
+total_iters = 10_000
+alpha = 0.01
+print(f'Making {total_iters} models')
+avg, std = avg_r2(x, y, iters=total_iters, alpha=alpha)
+print(f'With alpha value of: {alpha}')
+print(f'For {total_iters} total iterations')
+print(f'Average R2: {avg}')
+print(f'With stddev: {std}')
 
 plt.show()
