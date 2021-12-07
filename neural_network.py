@@ -5,6 +5,7 @@ from data_loader import DataSet
 from plotting import plot_predictions
 
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import r2_score
 from tensorflow import keras    
 
 def get_data(split: bool=False):
@@ -64,19 +65,17 @@ def create_model(model_filename: str) -> tuple[keras.Model, float, list[list], l
     model = gen_model()
     model = train(model, X_train, Y_train)
     mape = evaluate(model, X_test, Y_test)
-    return model, mape, X_test, Y_test
+    return model, eval_mape, X_test, Y_test
 
-def create_accepted_model(model_filename: str, acceptable_mape: float, acceptable_r2: float) -> None:
+def create_accepted_model(model_filename: str, acceptable_eval_mape: float, acceptable_r2: float) -> None:
     accepted = False
     while not accepted:
-        model, mape, X_test, Y_test = create_model(model_filename)
+        model, eval_mape, X_test, Y_test = create_model(model_filename)
+        
+        if eval_mape < 16:
+            Y_predictions = model.predict(X_test) 
 
-        if mape < 16:
-            from sklearn.metrics import r2_score
-            Y_predictions = model.predict(X_test)
-            r2 = r2_score(Y_test, Y_predictions)
-            
-            if r2 > 0.7:
+            if r2_score(Y_test, Y_predictions) > 0.7:
                 plot(Y_test.flatten(), Y_predictions.flatten())
                 model.save(model_filename)
                 accepted = True
@@ -85,6 +84,6 @@ def create_accepted_model(model_filename: str, acceptable_mape: float, acceptabl
 if __name__ == "__main__":
     model_filename = 'new_model.h5'
 
-    create_accepted_model(model_filename, acceptable_mape=16, acceptable_r2=0.7)
+    create_accepted_model(model_filename, acceptable_eval_mape=16, acceptable_r2=0.7)
     plot_model_all(model_filename)
     
