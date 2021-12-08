@@ -57,6 +57,7 @@ ds = DataSet(normalize_y=False)
 x = ds.census
 y = ds.zillow.flatten()
 y /= y.max()
+feature_names = ds.dataColumns
 
 # Split data
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2)
@@ -86,4 +87,10 @@ plot_data = {
     'pred': pred
 }
 plot_predictions(plot_data, title='Gamma Regression: Predicted vs Actual', filename='glm', zillow_actual=True)
+
+coefs = list(zip(feature_names, model.coef_))
+coefs = sorted(coefs, key=lambda c: abs(c[1]), reverse=True)
+coefs = '\n\t'.join([f'{c[0]}: {c[1]}' for c in coefs])
+print(f'\nCOEFS:\n\t{coefs}')
+
 plt.show()
