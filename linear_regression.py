@@ -22,8 +22,9 @@ def nloss(y, yh):
     return mse
 
 
-def avg_r2(x, y, iters=300):
+def avg_r2(x, y, iters=300, getcoefs=False):
     scores = []
+    coefs = []
     for _ in range(iters):
         x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2)
 
@@ -33,9 +34,17 @@ def avg_r2(x, y, iters=300):
         r2 = r2_score(y_test, pred)
         scores.append(r2)
 
-    scores = np.array(scores)
+        if getcoefs:
+            coefs.append(reg.coef_)
 
-    return np.average(scores), np.std(scores)
+    scores = np.array(scores)
+    coefs = np.array(coefs)
+    coefs = np.average(coefs, axis=0)
+
+    if getcoefs:
+        return np.average(scores), np.std(scores), coefs
+    else:
+        return np.average(scores), np.std(scores)
 
 
 # Load data
@@ -71,7 +80,7 @@ plot_data = {
 plot_predictions(plot_data, title='Linear Regression: Predicted vs Actual', filename='linearreg')
 
 total_iters = 10_000
-normal_average = avg_r2(x, y, iters=total_iters)
+normal_average = avg_r2(x, y, iters=total_iters, getcoefs=True)
 
 
 ### AGAIN, but with feature reduction
@@ -109,7 +118,7 @@ title = 'Linear Regression with Forward Selected Features: Predicted vs Actual'
 filename = 'linearForward'
 plot_predictions(plot_data, title=title, filename=filename)
 
-feature_reduced_average = avg_r2(x, y, iters=total_iters)
+feature_reduced_average = avg_r2(x, y, iters=total_iters, getcoefs=True)
 
 print(f'\nAverage R2 value with all data: {normal_average[0]}')
 print(f'Average R2 value with feature reduction: {feature_reduced_average[0]}')
