@@ -51,6 +51,7 @@ def avg_r2(x, y, iters=300, getcoefs=False):
 ds = DataSet()
 x = ds.census
 y = ds.zillow.flatten()
+feature_names = ds.dataColumns
 
 # Split data
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2)
@@ -87,6 +88,11 @@ normal_average = avg_r2(x, y, iters=total_iters, getcoefs=True)
 # Feature reduction with hardcoded values from previous results
 forwardResults = np.array([3, 4, 5, 6, 10, 11, 12, 13, 14, 15, 16, 17, 19, 20, 21, 22, 26, 27, 29, 30, 33])
 x = x[:, forwardResults]
+reduced_feature_names = np.array(feature_names)[forwardResults]
+# print(f'Reduced features:\n{reduced_feature_names}')
+# print(len(reduced_feature_names))
+# print(len(forwardResults))
+# quit()
 
 # Split data
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2)
@@ -125,7 +131,18 @@ print(f'Average R2 value with feature reduction: {feature_reduced_average[0]}')
 print(f'R2 std dev with all data: {normal_average[1]}')
 print(f'R2 std dev with feature reduction: {feature_reduced_average[1]}')
 
-print(f'\nAverage coefs with full data: {normal_average[2]}')
-print(f'Average coefs with reduced data: {feature_reduced_average[2]}')
+# print(f'\nAverage coefs with full data: {normal_average[2]}')
+# print(f'Average coefs with reduced data: {feature_reduced_average[2]}')
+
+normal_coefs = list(zip(feature_names, normal_average[2]))
+reduced_coefs = list(zip(reduced_feature_names, feature_reduced_average[2]))
+
+normal_coefs = sorted(normal_coefs, key=lambda c: abs(c[1]), reverse=True)
+reduced_coefs = sorted(reduced_coefs, key=lambda c: abs(c[1]), reverse=True)
+
+normal_coefs = '\n\t'.join([f'{c[0]}: {c[1]}' for c in normal_coefs])
+reduced_coefs = '\n\t'.join([f'{c[0]}: {c[1]}' for c in reduced_coefs])
+print(f'\nNORMAL COEFS:\n\t{normal_coefs}')
+print(f'\nREDUCED COEFS:\n\t{reduced_coefs}')
 
 plt.show()
