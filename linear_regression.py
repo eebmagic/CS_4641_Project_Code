@@ -125,4 +125,7 @@ print(f'Average R2 value with feature reduction: {feature_reduced_average[0]}')
 print(f'R2 std dev with all data: {normal_average[1]}')
 print(f'R2 std dev with feature reduction: {feature_reduced_average[1]}')
 
+print(f'\nAverage coefs with full data: {normal_average[2]}')
+print(f'Average coefs with reduced data: {feature_reduced_average[2]}')
+
 plt.show()
