@@ -113,8 +113,8 @@ def get_min_max():
     maximal_weights = list(zip(feature_names, maximal[0][0]))
     minimal_weights = list(zip(feature_names, minimal[0][0]))
 
-    maximal_weights = sorted(maximal_weights, key=lambda w: abs(w[1]), reverse=True)
-    minimal_weights = sorted(minimal_weights, key=lambda w: abs(w[1]), reverse=True)
+    maximal_weights = sorted(maximal_weights, key=lambda w: w[1], reverse=True)
+    minimal_weights = sorted(minimal_weights, key=lambda w: w[1], reverse=True)
 
     maximal_weights = '\n\t'.join([f'{c[0]}: {c[1]}' for c in maximal_weights])
     minimal_weights = '\n\t'.join([f'{c[0]}: {c[1]}' for c in minimal_weights])
