@@ -60,7 +60,7 @@ def plot_model_all(model_filename: str) -> None:
     Y_predictions = model.predict(X)
     plot(Y.flatten(), Y_predictions.flatten(), all_data=True)
 
-def create_model() -> tuple[keras.Model, float, list[list], list]:
+def create_model():
     X_train, X_test, Y_train, Y_test = get_data(split=True)
     model = gen_model()
     model = train(model, X_train, Y_train)
@@ -80,10 +80,79 @@ def create_accepted_model(model_filename: str, acceptable_eval_mape: float, acce
                 model.save(model_filename)
                 accepted = True
 
+def find_optimal_input(model_filename: str, iters=100, target=1):
+    model = keras.models.load_model(model_filename)
+    old_layers = model.layers
+
+    new_input = MyInputLayer((1, 34))
+    new_layers = [new_input]
+    for layer in old_layers:
+        layer.trainable = False
+        new_layers.append(layer)
+
+    model_extended = keras.Sequential(new_layers)
+    model_extended.compile(optimizer='adam', loss='mse', metrics='mape')
+
+    dummy_input = [1]
+    dummy_output = [target]
+    model_extended.fit(dummy_input, dummy_output, epochs=iters)
+
+    proper_weights = new_input.get_weights()
+
+    return proper_weights
+
+def get_min_max():
+    model_filename = 'nn_model.h5'
+    maximal = find_optimal_input(model_filename, target=1, iters=400)
+    minimal = find_optimal_input(model_filename, target=0, iters=1000)
+
+    model = keras.models.load_model(model_filename)
+    ds = DataSet()
+    feature_names = ds.dataColumns
+
+    maximal_weights = list(zip(feature_names, maximal[0][0]))
+    minimal_weights = list(zip(feature_names, minimal[0][0]))
+
+    maximal_weights = sorted(maximal_weights, key=lambda w: abs(w[1]), reverse=True)
+    minimal_weights = sorted(minimal_weights, key=lambda w: abs(w[1]), reverse=True)
+
+    maximal_weights = '\n\t'.join([f'{c[0]}: {c[1]}' for c in maximal_weights])
+    minimal_weights = '\n\t'.join([f'{c[0]}: {c[1]}' for c in minimal_weights])
+
+    print(f'\nMAXIMAL INPUT:\n\t{maximal_weights}')
+    print(f'\nMINIMAL INPUT:\n\t{minimal_weights}')
+
+    max_result = model.predict(maximal)
+    print('max:', max_result)
+    min_result = model.predict(minimal)
+    print('min:', min_result)
+
+class MyInputLayer(keras.layers.Layer):
+    '''
+    Support class for extra layer in finding optimal input values.
+    '''
+    def __init__(self, output_dim, **kwargs):
+        self.output_dim = output_dim
+        super(MyInputLayer, self).__init__(**kwargs)
+
+    def build(self, input_shape):
+        self.kernel = self.add_weight(name='kernel',
+                                      shape=self.output_dim,
+                                      initializer='uniform',
+                                      trainable=True)
+        super(MyInputLayer, self).build(input_shape)
+
+    def call(self, x):
+        return self.kernel
+
+    def compute_output_shape(self, input_shape):
+        return self.output_dim
+
 
 if __name__ == "__main__":
     model_filename = 'new_model.h5'
 
     create_accepted_model(model_filename, acceptable_eval_mape=16, acceptable_r2=0.7)
     plot_model_all(model_filename)
-    
+
+    # get_min_max()
