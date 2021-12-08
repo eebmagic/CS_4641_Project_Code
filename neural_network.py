@@ -60,7 +60,7 @@ def plot_model_all(model_filename: str) -> None:
     Y_predictions = model.predict(X)
     plot(Y.flatten(), Y_predictions.flatten(), all_data=True)
 
-def create_model(model_filename: str) -> tuple[keras.Model, float, list[list], list]:
+def create_model() -> tuple[keras.Model, float, list[list], list]:
     X_train, X_test, Y_train, Y_test = get_data(split=True)
     model = gen_model()
     model = train(model, X_train, Y_train)
@@ -70,8 +70,8 @@ def create_model(model_filename: str) -> tuple[keras.Model, float, list[list], l
 def create_accepted_model(model_filename: str, acceptable_eval_mape: float, acceptable_r2: float) -> None:
     accepted = False
     while not accepted:
-        model, eval_mape, X_test, Y_test = create_model(model_filename)
-        
+        model, eval_mape, X_test, Y_test = create_model()
+
         if eval_mape < 16:
             Y_predictions = model.predict(X_test) 
 
